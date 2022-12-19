@@ -47,15 +47,19 @@ spec:
     }
 
     parameters {
-        string(name: 'IMAGE_NAME', defaultValue: '', description: 'Your image name in format USER_NAME/IMAGE. You can write it as default value if you want')
+        string(name: 'IMAGE_NAME', defaultValue: 'darynanikk/k8s-lab', description: 'Your image name in format USER_NAME/IMAGE. You can write it as default value if you want')
     }
 
     stages {
         stage('Test') {
             steps {
-                // TODO: Run 'npm test' using the node container
-                // TODO: Make sure you do it inside express-fe folder.
-                // Search google for Jenkins pipeline 'dir' function
+                steps {
+                container('node') {
+                    dir("express-fe") {
+                        sh "npm test"    
+                    }
+                }
+              }
             }
         }
         stage('Build image') {
@@ -76,10 +80,14 @@ spec:
             steps {
                 // TODO: Need to do two things
                 // TODO: First: somehow using bash, substitute new params.IMAGE_NAME and BUILD_NUMBER variable into your frontend deployment.
+                
                 // TODO: Hint: bitnami/kubectl has 'sed' utility available
                 // TODO: But you can use any other solution (Kustomize, etc.)
                 // TODO: Second - use kubectl apply from kubectl container
+                docker
+
             }
+             
         }
         stage('Test deployment') {
             agent {
